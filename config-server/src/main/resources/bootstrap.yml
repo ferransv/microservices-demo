@@ -1,0 +1,31 @@
+#The bootstrap yaml files are loaded, like thie one, by a parent spring application context, so it will be loaded before
+#application yaml file. And for the spring cloud, we need to set bootstrap phase configurations in this
+#  file, **because this bootstrap yaml file will be used to obtain the application configuration from the
+#  config server repository** prior to loading application yaml file.
+
+#  This file tells the Spring Cloud Config service what port to listen in on, the
+#  application name, the application profiles, and the location where we will store the
+#  configuration data.
+spring:
+  application:
+    name: configserver
+  cloud:
+    config:
+      server:
+        git:
+          #We set the file path of the config server repository in this Uri definition.
+#          uri: file:///C:/projects/repos/microservices-demo/config-server-repository
+          uri: https://github.com/ferransv/config-server-repository
+          username: ferransv
+          password: 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
+          #Configuration servers clones the config-server-repository in git on the start up
+          clone-on-start: true
+          default-label: master #def. label in github
+    #If config server cannot reach to config server repository and load the configuration it will stop inmediatelly
+    fail-fast: true
+  security:
+    user:
+      username: spring_cloud_user
+      password: springCloud_Pwd!
+server:
+  port: 8888

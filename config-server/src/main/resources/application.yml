@@ -1,0 +1,9 @@
+#server:
+#  port: 8888
+
+logging:
+  level:
+    ROOT: DEBUG
+    #    when we first run the config service, we want to see what's happening under the hood for config server
+    #    I am overriding the logging level that is already defined in the logback xml file.
+    org.spring.framework.cloud.config: DEBUG

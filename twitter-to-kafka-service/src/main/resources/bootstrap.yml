@@ -1,0 +1,18 @@
+#We then need to add a bootstrap yaml file here to set up *spring cloud properties*, as the fetching
+#of configuration from config server **should be before loading the application configuration (application.yml)**.
+
+#This 'config-client' here is important because we use this prefix in the configuration files of config server repository.
+#So if you look at the config-server-repository directory, you will see a file, config-client-twitter_to_kafka.
+spring:
+  application:
+    name: twitter-to-kafka-service
+  profiles:
+    active: twitter_to_kafka
+  cloud:
+    config:
+      name: twitter-to-kafka-service,config-client #That means we want to get the data from
+                                                   #that configuration file for Twitter-to-Kafka-service
+                                                   #(concretely from the config-server-repository directory)
+      uri: http://localhost:8888 #in which port the config server is running
+      username: spring_cloud_user
+      password: springCloud_Pwd!
