@@ -6,6 +6,8 @@
 #  This file tells the Spring Cloud Config service what port to listen in on, the
 #  application name, the application profiles, and the location where we will store the
 #  configuration data.
+server:
+  port: 8888
 spring:
   application:
     name: configserver
@@ -16,16 +18,21 @@ spring:
           #We set the file path of the config server repository in this Uri definition.
 #          uri: file:///C:/projects/repos/microservices-demo/config-server-repository
           uri: https://github.com/ferransv/config-server-repository
+          #GitHub user/password
           username: ferransv
-          password: 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
+          password: ENC(b796ijFK9LxOMi5BrCF8OqIPSKI5xdE+H7+s0jDFK4EyO3RjrEJxtEUG0bwgVuGM0A+mVCcm9zBryAOluPSXAHn2e1rlw92hO1AysFMu7xI=)
           #Configuration servers clones the config-server-repository in git on the start up
           clone-on-start: true
           default-label: master #def. label in github
     #If config server cannot reach to config server repository and load the configuration it will stop inmediatelly
     fail-fast: true
-  security:
-    user:
-      username: spring_cloud_user
-      password: springCloud_Pwd!
-server:
-  port: 8888
+#jasypt:
+#  encryptor:
+#    password: Demo_Pwd!2020 ->#Better than pass it here directly(like it is here in commented out),
+#    ->pass this key when the application starts through env var JASYPT_ENCRYPTOR_PASSWORD=Demo_Pwd!2020,
+#  and it wil be transformed to
+  ##asypt:
+    ##  encryptor:
+    ##    password:Demo_Pwd!2020
+
+#    algorithm: PBEWithHMACSHA512AndAES_256

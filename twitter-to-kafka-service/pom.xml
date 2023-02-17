@@ -59,7 +59,7 @@
                         <!--            Then in the execution section we will give the phase as installed because we want to create the docker-->
                         <phase>install</phase>
                         <goals>
-                            <!--              maven install command and as a goal we will set build-image which will actually create the docker image-->
+                            <!--              maven install command, and as a goal we will set build-image which will actually create the docker image-->
                             <goal>build-image</goal>
                         </goals>
                     </execution>
