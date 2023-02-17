@@ -11,14 +11,18 @@ spring:
   cloud:
     config:
       name: twitter-to-kafka-service,config-client #That means we want to get the data from
-                                                   #that configuration file for Twitter-to-Kafka-service
-                                                   #(concretely from the config-server-repository directory)
+        #that configuration file for Twitter-to-Kafka-service
+        #(concretely from the config-server-repository directory)
+#        http://localhost:8888/config-client/twitter_to_kafka to check if we can get the configuration properties
+        #stored in the the config-server service
+
       uri: http://localhost:8888 #in which port the config server is running
-     #We acces to the secured config server using this user / password(which is encrypted or cyphered)
+      #!!We acces to the secured config server using this user / password(which was encrypted or cyphered
+      #via command line with JCE using the encrypt key, and the real password, to then generate the cyphered password beneath)
       username: spring_cloud_user
       password: '{cipher}2ca52e09ec85aa620abce2e704242985bf786c9a684461b023a563b34b96c527ec81160eae48d731017c98ee0b9e1824'
 
-#  we pass this key when the application starts through env var
+#  we pass this KEY when the application starts through env var
 #  encrypt:
 #    key: 'Demo_Pwd!2020'
 #This way the password (SpringCloud_Pwd!) of the spring_cloud_user is encrypted using the encrypt key
