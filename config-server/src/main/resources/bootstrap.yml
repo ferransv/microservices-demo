@@ -6,6 +6,8 @@
 #  This file tells the Spring Cloud Config service what port to listen in on, the
 #  application name, the application profiles, and the location where we will store the
 #  configuration data.
+server:
+  port: 8888
 spring:
   application:
     name: configserver
@@ -23,9 +25,13 @@ spring:
           default-label: master #def. label in github
     #If config server cannot reach to config server repository and load the configuration it will stop inmediatelly
     fail-fast: true
+
+    #This the user / password(it is encrypted or cyphered), through which we are going to secure the access to the config-server
   security:
     user:
-      username: spring_cloud_user
-      password: springCloud_Pwd!
-server:
-  port: 8888
+      name: spring_cloud_user
+      password: '{cipher}c0d85293cb01a46b3b629a12e5620f4e9d00d4ede8bdf248cf5b83e23f4536501e4b34a8d56b7a34fcee17aa01d05330'
+
+#  pass this key when the application starts through env var
+#  encrypt:
+#    key: 'Demo_Pwd!2020'
