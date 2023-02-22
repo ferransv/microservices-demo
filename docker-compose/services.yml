@@ -6,10 +6,12 @@ services:
       - "5005:5005"
     volumes:
       - "./docker-logs:/workspace/twitter-to-kafka-service/logs"
-#   Here we see that we can simply override any configuration variable, for example, for the bootstrap server
-#   We use the Kafka-broker-1 from Kafka cluster yml file instead of localhost because we will run *everything inside docker*
-#   And to be able to reach to Kafka from our service, we should use hostname.
-#  Because inside docker, all these containers will act as different hosts.
+    #   Here we see that we can simply override any configuration variable, for example, for the bootstrap server
+    #   We use the Kafka-broker-1 from Kafka cluster yml file instead of localhost because we will run *everything inside docker*
+    #   And to be able to reach to Kafka from our service, we should use hostname.
+    #  Because inside docker, all these containers will act as different hosts.
+    user: root
+    entrypoint: [ "check-config-server-started.sh" ]
     environment:
       - "JAVA_OPTS=-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005 -Xms128m -Xmx256m"
       - "LOGGING_LEVEL_COM_MICROSERVICES_DEMO=info"
@@ -19,5 +21,27 @@ services:
       - "KAFKA-CONFIG_SCHEMA-REGISTRY-URL=http://schema-registry:8081"
       - "TWITTER-TO-KAFKA-SERVICE_ENABLE-MOCK-TWEETS=false"
       - "TWITTER-TO-KAFKA-SERVICE_ENABLE-V2-TWEETS=true"
+      #      To be able to reach to Config server, Twitter to Kafka service cannot use localhost anymore.
+      #It should use the host name of the config server container.
+      - "SPRING_CLOUD_CONFIG_URI=http://config-server:8888"
+      - "ENCRYPT_KEY=${ENCRYPT_KEY}"
     networks:
       - ${GLOBAL_NETWORK:-services}
+  config-server:
+    image: ${GROUP_ID}/config.server:${SERVICE_VERSION:-latest}
+    ports:
+      - "5006:5006"
+    volumes:
+      #In order to not lose the LOG data, preserving its old states after restarting the Container, we use VOLUMES
+      #for that there is a mapping between the docker logs folder and the logs folders inside the service,
+      - "./docker-logs:/workspace/config-server/logs"
+      #The container has its log folder structure
+      #And the logs folders local to the module are created using the build image goal of Spring boot
+    environment:
+      #      in the Java Opts environment variable, set the 5006 port to open a port for remote debugging for this service
+      - "JAVA_OPTS=-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5006 -Xms128m -Xmx256m"
+      - "ENCRYPT_KEY=${ENCRYPT_KEY}"
+      #passed encrypt_key environment variable in the environment section because it is required to decrypt the secrets at runtime.
+    networks:
+      - ${GLOBAL_NETWORK:-services}
+      #here I have the network definition, which uses global network from the environment
