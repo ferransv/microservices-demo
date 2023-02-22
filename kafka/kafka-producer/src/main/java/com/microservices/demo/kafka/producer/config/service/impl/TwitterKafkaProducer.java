@@ -27,20 +27,15 @@ public class TwitterKafkaProducer implements KafkaProducer<Long, TwitterAvroMode
     @Override
     public void send(String topicName, Long key, TwitterAvroModel message) {
         LOG.info("Sending message='{}' to topic='{}'", message, topicName);
-        //ListenableFuture registers callback methods for handling events when the response returns.
-        //Since the send method of Kafka template is an ASYNCHRONOUS operation, it returns a listenable future
         ListenableFuture<SendResult<Long, TwitterAvroModel>> kafkaResultFuture =
                 kafkaTemplate.send(topicName, key, message);
-        //And to get a response later asynchronously, we simply added a callback.
         addCallback(topicName, message, kafkaResultFuture);
     }
 
-    //Normally spring closes this Kafka template prior to shutdown.
     @PreDestroy
     public void close() {
         if (kafkaTemplate != null) {
             LOG.info("Closing kafka producer!");
-            //To call the Kafka template destroy method also explicitly to be sure that it is destroyed successfully before application shotdown
             kafkaTemplate.destroy();
         }
     }
@@ -53,8 +48,6 @@ public class TwitterKafkaProducer implements KafkaProducer<Long, TwitterAvroMode
                 LOG.error("Error while sending message {} to topic {}", message.toString(), topicName, throwable);
             }
 
-            //in the onsuccess method, we will get metadata from results with regards to different about
-            // the Kafka message produced after the message has been received by Kafka
             @Override
             public void onSuccess(SendResult<Long, TwitterAvroModel> result) {
                     RecordMetadata metadata = result.getRecordMetadata();

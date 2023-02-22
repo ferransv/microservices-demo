@@ -15,8 +15,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Configuration
-// two generic variables: K Extends serializable and V extend SpecificRecordBase.
-public class KafkaProducerConfig<K extends Serializable, V extends SpecificRecordBase> { //SpecificRecordBase is a class from avro library
+public class KafkaProducerConfig<K extends Serializable, V extends SpecificRecordBase> {
 
     private final KafkaConfigData kafkaConfigData;
 
@@ -28,7 +27,7 @@ public class KafkaProducerConfig<K extends Serializable, V extends SpecificRecor
     }
 
     @Bean
-    public Map<String, Object> producerConfig() { //Bean to return map string object, which will include our configuration properties
+    public Map<String, Object> producerConfig() {
         Map<String, Object> props = new HashMap<>();
         props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaConfigData.getBootstrapServers());
         props.put(kafkaConfigData.getSchemaRegistryUrlKey(), kafkaConfigData.getSchemaRegistryUrl());
@@ -44,14 +43,12 @@ public class KafkaProducerConfig<K extends Serializable, V extends SpecificRecor
         return props;
     }
 
-    @Bean //a bean to construct a producer factory where we will return a default Kafka producer factory object
+    @Bean
     public ProducerFactory<K, V> producerFactory() {
         return new DefaultKafkaProducerFactory<>(producerConfig());
     }
 
-    @Bean // a bean to return a Kafka Template and pass the producer factory as a parameter.
-    // Kafka template is actually *a wrapper class around Kafka producer*
-    // And it PROVIDES some METHODS to be able to SEND data to Kafka easily.
+    @Bean
     public KafkaTemplate<K, V> kafkaTemplate() {
         return new KafkaTemplate<>(producerFactory());
     }
