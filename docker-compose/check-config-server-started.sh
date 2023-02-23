@@ -15,6 +15,6 @@ while [[ ! $curlResult == "200" ]]; do
   curlResult=$(curl -s -o /dev/null -I -w "%{http_code}" http://config-server:8888/actuator/health)
 done
 
-#Then we want to continue launching our Spring boot application, cnb/lifecycle/launcher,
-# which is actually the original entry point.
+#Then we want to continue launching our Spring boot application twitter-to-kafka-service, cnb/lifecycle/launcher,
+# which is actually the original entry point of the docker container.
 ./cnb/lifecycle/launcher
