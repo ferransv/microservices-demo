@@ -6,15 +6,16 @@ services:
       - "5005:5005"
     volumes:
       - "./docker-logs:/workspace/twitter-to-kafka-service/logs"
-      - "./check-config-server-started.sh:/usr/local/bin/check-config-server-started.sh"
-      #   Here we see that we can simply override any configuration variable, for example, for the bootstrap server
-      #   We use the Kafka-broker-1 from Kafka cluster yml file instead of localhost because we will run *everything inside docker*
-      #   And to be able to reach to Kafka from our service, we should use hostname.
-      #  Because inside docker, all these containers will act as different hosts.
-    user: root
-    entrypoint: ["check-config-server-started.sh"]
-    depends_on:
-      - config-server
+#      - "./check-config-server-started.sh://wsl.localhost/docker-desktop/usr/local/bin/check-config-server-started.sh"
+#      - "./check-config-server-started.sh:/workspace/twitter-to-kafka-service"
+#      #   Here we see that we can simply override any configuration variable, for example, for the bootstrap server
+#      #   We use the Kafka-broker-1 from Kafka cluster yml file instead of localhost because we will run *everything inside docker*
+#      #   And to be able to reach to Kafka from our service, we should use hostname.
+#      #  Because inside docker, all these containers will act as different hosts.
+#    user: root
+#    entrypoint: ["check-config-server-started.sh"]
+#    depends_on:
+#      - config-server
     environment:
       - "JAVA_OPTS=-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005 -Xms128m -Xmx256m"
       - "LOGGING_LEVEL_COM_MICROSERVICES_DEMO=info"
