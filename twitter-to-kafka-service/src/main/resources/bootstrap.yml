@@ -13,18 +13,19 @@ spring:
       name: twitter-to-kafka-service,config-client #That means we want to get the data from
                                                    #that configuration file for Twitter-to-Kafka-service
                                                    #(concretely from the config-server-repository directory)
-      uri: http://localhost:8888 #in which port the config server is running
-      #user/password of our Config Server
+      uri: http://localhost:8888 #in which port the our config server is running #Achtung!!!
+      #... and its config-server user/password
       username: spring_cloud_user
-      password: ENC(J61cMappIHgzgiTXuSbtsygJXhzmE9toRVPq/7s1sfeZ3lqJvVenpge7eHJ5cJwvRKT3ryPyRhfo+7S5z6jT/A==)
-                                    #encrypted password of springCloud_Pwd! in ENC()
+#      password: springCloud_Pwd!
+      password: ENC(G8d+6ofS9lpz+XDjCHVgeXKHGXePyVPdsbumynBzDPI1ev60pjnfYnexBp/5H9eeYaJ0XAx6+aciIhES+8VQEg==)
+                                    #!!!encryption of of springCloud_Pwd! password/key  in ENC()
 
 #  Now we need to add Jasypt encrypter password CONFIGURATION to the bootstrap yaml file to be able
-#  to decrypt these passwords at runtime.
-#jasypt:
-#  encryptor:
-#    password: Demo_Pwd!2020 #Better than pass it here directly(like it is here in commented out),
-#    ->pass this key when the application starts through env var, or LIKE IT IS IN THIS APP, throug Arg variables..
+#  to DECRYPT with this KEY the config-server password at runtime.
+jasypt:
+  encryptor:
+    password: Demo_Pwd!2020 #Better than pass it here directly(like it is here in commented out),
+#    ->Preferable solution to be used: pass this key when the application starts through env var, or LIKE IT IS IN THIS APP, throug Arg variables..
 #      # Need to provide the encrypter password (the master key) to be able
 #                            # to decrypt these passwords at runtime. This value could better come through JVM parameters
 #                            # or ENV VARIABLES

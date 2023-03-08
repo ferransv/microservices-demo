@@ -6,6 +6,7 @@ services:
       - "5005:5005"
     volumes:
       - "./docker-logs:/workspace/twitter-to-kafka-service/logs"
+#   Specific ENV. variables for this Docker CONTAINER
 #   Here we see that we can simply override any configuration variable, for example, for the bootstrap server
 #   We use the Kafka-broker-1 from Kafka cluster yml file instead of localhost because we will run *everything inside docker*
 #   And to be able to reach to Kafka from our service, we should use hostname.
@@ -18,6 +19,5 @@ services:
       - "KAFKA-CONFIG_BOOTSTRAP-SERVERS=kafka-broker-1:9092, kafka-broker-2:9092, kafka-broker-3:9092"
       - "KAFKA-CONFIG_SCHEMA-REGISTRY-URL=http://schema-registry:8081"
       - "TWITTER-TO-KAFKA-SERVICE_ENABLE-MOCK-TWEETS=false"
-      - "TWITTER-TO-KAFKA-SERVICE_ENABLE-V2-TWEETS=true"
     networks:
       - ${GLOBAL_NETWORK:-services}
