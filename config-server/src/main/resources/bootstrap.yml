@@ -20,8 +20,8 @@ spring:
           uri: https://github.com/ferransv/config-server-repository
           #GitHub user/password
           username: ferransv
-          password: ENC(jO5qemac+pNABQ/nzSCC6iD0a+hLfOKzZXDDz0C9JGPR4XpOiFYITYlyy2hIPWS+RI+Fsgr12rudmiySY8AKc4B9h6tmCmRDZlJmUl7noQQ=)
-#          password: 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
+          password: ENC(9sD3mImFV3cwoyxTgd+HFrKgPv+nILk5FBj5PxF7MB5Y4dDFY/XZjlM2aS6C8oFFdOPLS1PTjGviOTOymvAo5ITt+Ea9CTTHZHAjX3RKj1g=)
+#          password: ******
           #Configuration servers clones the config-server-repository in git on the start up
           clone-on-start: true
           default-label: main #def. label in github
