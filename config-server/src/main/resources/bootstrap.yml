@@ -20,11 +20,11 @@ spring:
           uri: https://github.com/ferransv/config-server-repository
           #GitHub user/password
           username: ferransv
-          password: ENC(XJy8kaDiORV6F36neGELmU1PDSajS2ySopjghAwiJ9MGS3qx7S/vTHrY5/dRm24B8Qoed6E2eWg5HUD/pnxmebA96lLFypUrabrNDuK5Fj0=)
-#          password: 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
+          password: ENC(jO5qemac+pNABQ/nzSCC6iD0a+hLfOKzZXDDz0C9JGPR4XpOiFYITYlyy2hIPWS+RI+Fsgr12rudmiySY8AKc4B9h6tmCmRDZlJmUl7noQQ=)
+#          password: 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
           #Configuration servers clones the config-server-repository in git on the start up
           clone-on-start: true
-          default-label: master #def. label in github
+          default-label: main #def. label in github
     #If config server cannot reach to config server repository and load the configuration it will stop inmediatelly
     fail-fast: true
 
@@ -33,7 +33,7 @@ spring:
     user:
       name: spring_cloud_user
 #      password: springCloud_Pwd!
-      password: ENC(G8d+6ofS9lpz+XDjCHVgeXKHGXePyVPdsbumynBzDPI1ev60pjnfYnexBp/5H9eeYaJ0XAx6+aciIhES+8VQEg==)
+      password: ENC(Ee97MGhH7kW4cw4gJtMCY57oBlyINtSl7sIc6T8ljlS61DRlTwBiDZ+F+PWM3i4oLVr01LXz82Q7jNQCSbSRvg==)
 
 #  Now we need to add Jasypt encrypter password CONFIGURATION to the bootstrap yaml file to be able
 #  to DECRYPT with this KEY both passwords (the GitHub and config-server ones) at runtime.

@@ -17,7 +17,7 @@ spring:
       #... and its config-server user/password
       username: spring_cloud_user
 #      password: springCloud_Pwd!
-      password: ENC(G8d+6ofS9lpz+XDjCHVgeXKHGXePyVPdsbumynBzDPI1ev60pjnfYnexBp/5H9eeYaJ0XAx6+aciIhES+8VQEg==)
+      password: ENC(Ee97MGhH7kW4cw4gJtMCY57oBlyINtSl7sIc6T8ljlS61DRlTwBiDZ+F+PWM3i4oLVr01LXz82Q7jNQCSbSRvg==)
                                     #!!!encryption of of springCloud_Pwd! password/key  in ENC()
 
 #  Now we need to add Jasypt encrypter password CONFIGURATION to the bootstrap yaml file to be able
