@@ -10,10 +10,12 @@ spring:
     active: twitter_to_kafka
   cloud:
     config:
-      name: twitter-to-kafka-service,config-client #That means we want to get the data from
-                                                   #that configuration file for Twitter-to-Kafka-service
-                                                   #(concretely from the config-server-repository directory)
-      uri: http://localhost:8888 #in which port the our config server is running #Achtung!!!
+      #That means we want to get the data from
+      #that configuration file for Twitter-to-Kafka-service
+      #(concretely from the config-server-repository directory)
+      name: twitter-to-kafka-service,config-client
+      #in which port the our config server is running #Achtung!!!
+      uri: http://localhost:8888
       #... and its config-server user/password
       username: spring_cloud_user
 #      password: springCloud_Pwd!
@@ -24,7 +26,8 @@ spring:
 #  to DECRYPT with this KEY the config-server password at runtime.
 jasypt:
   encryptor:
-    password: Demo_Pwd!2020 #Better than pass it here directly(like it is here in commented out),
+    password: Demo_Pwd!2020
+    #Better than pass it here directly(like it is here in commented out),
 #    ->Preferable solution to be used: pass this key when the application starts through env var, or LIKE IT IS IN THIS APP, throug Arg variables..
 #      # Need to provide the encrypter password (the master key) to be able
 #                            # to decrypt these passwords at runtime. This value could better come through JVM parameters

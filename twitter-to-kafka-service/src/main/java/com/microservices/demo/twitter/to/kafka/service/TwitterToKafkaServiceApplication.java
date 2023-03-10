@@ -13,7 +13,7 @@ import org.springframework.context.annotation.ComponentScan;
 //This Microservice is used as the Command component part in the CQRS pattern
 @SpringBootApplication
 
-@RefreshScope
+//@RefreshScope
 //Spring Boot applications only read their properties at startup, so property changes made in the Config Server won’t be automatically picked up by the
 //    Spring Boot application, but ->
 // Spring Boot Actuator offers a @RefreshScope annotation

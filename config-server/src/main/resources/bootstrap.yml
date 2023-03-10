@@ -20,11 +20,12 @@ spring:
           uri: https://github.com/ferransv/config-server-repository
           #GitHub user/password
           username: ferransv
-          password: ENC(9sD3mImFV3cwoyxTgd+HFrKgPv+nILk5FBj5PxF7MB5Y4dDFY/XZjlM2aS6C8oFFdOPLS1PTjGviOTOymvAo5ITt+Ea9CTTHZHAjX3RKj1g=)
+          password: ENC(DPZ6n2sCtoiFRU7qYd7lQ34siK6NS7aP6qFmQxScKUAlwTp8I+bcYdop4eNog8eJtFkbXVE8dsBXeFDwyYEBC2/jfIhYP9taMasPUcUcL5A=)
 #          password: ******
           #Configuration servers clones the config-server-repository in git on the start up
           clone-on-start: true
-          default-label: main #def. label in github
+          #def. label in github (tio)
+          default-label: master
     #If config server cannot reach to config server repository and load the configuration it will stop inmediatelly
     fail-fast: true
 
@@ -39,7 +40,8 @@ spring:
 #  to DECRYPT with this KEY both passwords (the GitHub and config-server ones) at runtime.
 jasypt:
   encryptor:
-    password: Demo_Pwd!2020 #Better than pass it here directly(like it is here in commented out),
+    password: Demo_Pwd!2020
+    #Better than pass it here directly(like it is here in commented out),
 #    ->Preferable solution to be used: pass this key when the application starts through env var JASYPT_ENCRYPTOR_PASSWORD=Demo_Pwd!2020,
 #  and it wil be transformed to
 

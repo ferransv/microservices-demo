@@ -19,5 +19,8 @@ services:
       - "KAFKA-CONFIG_BOOTSTRAP-SERVERS=kafka-broker-1:9092, kafka-broker-2:9092, kafka-broker-3:9092"
       - "KAFKA-CONFIG_SCHEMA-REGISTRY-URL=http://schema-registry:8081"
       - "TWITTER-TO-KAFKA-SERVICE_ENABLE-MOCK-TWEETS=false"
+      - "TWITTER_BEARER_TOKEN=AAAAAAAAAAAAAAAAAAAAAKOSlQEAAAAArRbeVb1d%2FuOLpPUOzsFMzm3JDLQ%3Dyu050A7dpGLdZYF3e8Pb72bqZFUvfeGFmBDWX3h1J3Uer4bxOs"
+      - "JASYPT_ENCRYPTOR_PASSWORD=Demo_Pwd!2020"
+      - "ENCRYPT_KEY=springCloud_Pwd!"
     networks:
       - ${GLOBAL_NETWORK:-services}
