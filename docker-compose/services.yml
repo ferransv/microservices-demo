@@ -22,5 +22,6 @@ services:
       - "TWITTER_BEARER_TOKEN=AAAAAAAAAAAAAAAAAAAAAKOSlQEAAAAArRbeVb1d%2FuOLpPUOzsFMzm3JDLQ%3Dyu050A7dpGLdZYF3e8Pb72bqZFUvfeGFmBDWX3h1J3Uer4bxOs"
       - "JASYPT_ENCRYPTOR_PASSWORD=Demo_Pwd!2020"
       - "ENCRYPT_KEY=springCloud_Pwd!"
+      - "SPRING_CLOUD_CONFIG_URI=http://config-server:8888"
     networks:
       - ${GLOBAL_NETWORK:-services}
