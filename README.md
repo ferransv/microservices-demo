@@ -1,6 +1,7 @@
 # Running the application
 - Please enter the correct credentials in twitter4j.properties file.
-- Then run TwitterToKafkaServiceApplication inside IntelliJ, or run with mvn spring-boot:run command
-- Check the new kafka-admin module, where we added KafkaAdminConfig and started to implement KafkaAdminClient
-- Check the new common-config module, where we added the RetryConfig class to create a RetryTemplate
-- Check also the app-cohnfig-data module, where we added RetryConfigData and KafkaConfigData. Then see the default values in twitter-to-kafka-service application.yml file
+- Then run mvn install -DskipTests command
+- Then go to docker-compose folder and run docker-compose up command to run kafka cluster and twitter-to-kafka-service together
+- We need to isntall sdkman, and then isntall springboot cli to encrypt our secrets
+- Check twitter-to-kafka-service and config server, where we changed bootstrap.yml file and set encrypted password 
+- Remember to add ENCRYPT_KEY as environment variable before starting config server and twitter to kafka service

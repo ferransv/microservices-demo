@@ -6,8 +6,6 @@
 #  This file tells the Spring Cloud Config service what port to listen in on, the
 #  application name, the application profiles, and the location where we will store the
 #  configuration data.
-server:
-  port: 8888
 spring:
   application:
     name: configserver
@@ -18,9 +16,11 @@ spring:
           #We set the file path of the config server repository in this Uri definition.
 #          uri: file:///C:/projects/repos/microservices-demo/config-server-repository
           uri: https://github.com/ferransv/config-server-repository
+          #GitHub user/password
           username: ferransv
-          password: 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
-          #Configuration servers clones the config-server-repository in git on the start up
+#          password: ENC(XXXX !To be generated through jce encryption with the key ENCRYPT_KEY=Demo_Pwd!2020 XXXXXXX)
+          #TODO generate it via sdkman
+          password: ***
           clone-on-start: true
           default-label: master #def. label in github
     #If config server cannot reach to config server repository and load the configuration it will stop inmediatelly

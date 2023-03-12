@@ -25,30 +25,30 @@ import java.util.stream.Collectors;
 @Component
 public class KafkaAdminClient {
 
-  private static final Logger LOG = LoggerFactory.getLogger(KafkaAdminClient.class);
+    private static final Logger LOG = LoggerFactory.getLogger(KafkaAdminClient.class);
 
-  private final KafkaConfigData kafkaConfigData;
+    private final KafkaConfigData kafkaConfigData;
 
-  private final AdminClient adminClient;
+    private final RetryConfigData retryConfigData;
 
-  private final RetryTemplate retryTemplate;
+    private final AdminClient adminClient;
 
-  private final RetryConfigData retryConfigData;
+    private final RetryTemplate retryTemplate;
 
-  private final WebClient webClient;
+    private final WebClient webClient;
 
-  //Inject the beans through the constructor
-  public KafkaAdminClient(KafkaConfigData config,
-                          RetryConfigData retryConfigData,
-                          AdminClient client,
-                          RetryTemplate template,
-                          WebClient webClient) {
-    this.kafkaConfigData = config;
-    this.retryConfigData = retryConfigData;
-    this.adminClient = client;
-    this.retryTemplate = template;
-    this.webClient = webClient;
-  }
+
+    public KafkaAdminClient(KafkaConfigData config,
+                            RetryConfigData retryConfigData,
+                            AdminClient client,
+                            RetryTemplate template,
+                            WebClient webClient) {
+        this.kafkaConfigData = config;
+        this.retryConfigData = retryConfigData;
+        this.adminClient = client;
+        this.retryTemplate = template;
+        this.webClient = webClient;
+    }
 
 
 //  Three methods, create topics, check topics created and check schema registry to
