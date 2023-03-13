@@ -12,10 +12,11 @@ services:
 #      #   We use the Kafka-broker-1 from Kafka cluster yml file instead of localhost because we will run *everything inside docker*
 #      #   And to be able to reach to Kafka from our service, we should use hostname.
 #      #  Because inside docker, all these containers will act as different hosts.
-    user: root
-    entrypoint: ["check-config-server-started.sh"]
-    depends_on:
-      - config-server
+#    user: root #To be able to run updates and also install the Curl command in the shell script we will run compose file with the user root.
+#    # we will override entry point for the Twitter to Kafka service and set this shell script that we created.
+#    entrypoint: ["check-config-server-started.sh"]
+#    depends_on:
+#      - config-server
     environment:
       - "JAVA_OPTS=-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005 -Xms128m -Xmx256m"
       - "LOGGING_LEVEL_COM_MICROSERVICES_DEMO=info"
@@ -23,11 +24,13 @@ services:
       - "KAFKA-CONFIG_TOPIC-NAME=twitter-topic"
       - "KAFKA-CONFIG_BOOTSTRAP-SERVERS=kafka-broker-1:9092, kafka-broker-2:9092, kafka-broker-3:9092"
       - "KAFKA-CONFIG_SCHEMA-REGISTRY-URL=http://schema-registry:8081"
-      - "TWITTER-TO-KAFKA-SERVICE_ENABLE-MOCK-TWEETS=true"
-      - "TWITTER-TO-KAFKA-SERVICE_ENABLE-V2-TWEETS=false"
+      - "TWITTER-TO-KAFKA-SERVICE_ENABLE-MOCK-TWEETS=false"
+     # - "TWITTER-TO-KAFKA-SERVICE_ENABLE-V2-TWEETS=true"#??
       #      To be able to reach to Config server, Twitter to Kafka service cannot use localhost anymore.
       #It should use the host name of the config server container.
-      - "SPRING_CLOUD_CONFIG_URI=http://config-server:8888"
+      - "SPRING_CLOUD_CONFIG_URI=http://config-server:8888" #To be able to reach to Config server,
+                    #Twitter to Kafka service cannot use localhost anymore. It should use the host name of the config server container.
+#      - "SPRING_CLOUD_CONFIG_URI=http://localhost:8888"
       - "ENCRYPT_KEY=${ENCRYPT_KEY}"
     networks:
       - ${GLOBAL_NETWORK:-services}
@@ -46,7 +49,8 @@ services:
       #      in the Java Opts environment variable, set the 5006 port to open a port for remote debugging for this service
       - "JAVA_OPTS=-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5006 -Xms128m -Xmx256m"
       - "ENCRYPT_KEY=${ENCRYPT_KEY}"
-      - "SERVER_PORT=8888"
+      - "SERVER_PORT=8888"#??
       #passed encrypt_key environment variable in the environment section because it is required to decrypt the secrets at runtime.
+      #both services, twitter to kafka service and config server has the same network definition, so they can see each other.
     networks:
       - ${GLOBAL_NETWORK:-services}
