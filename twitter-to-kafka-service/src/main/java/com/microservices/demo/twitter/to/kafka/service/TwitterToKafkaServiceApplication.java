@@ -52,6 +52,7 @@ public class TwitterToKafkaServiceApplication implements CommandLineRunner {
 //    }
 //  }
 
+//  *Spring Boot will automatically call the run method of all beans implementing this interface after the application context has been loaded.*
   @Override
   public void run(String... args) throws Exception {
     LOG.info("App starts...");

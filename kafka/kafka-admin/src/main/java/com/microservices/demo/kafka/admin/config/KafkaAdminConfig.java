@@ -21,6 +21,13 @@ public class KafkaAdminConfig {
     }
 
 
+//    About the use of @Bean vs @Component:
+//    Sometimes automatic configuration is not an option. When? Let's imagine that you want to wire components
+//    from 3rd-party libraries (you don't have the source code so you can't annotate its classes with @Component),
+//    so automatic configuration is not possible.
+//    The @Bean annotation returns an object that spring should register as bean in application context.
+//    The body of the method bears the logic responsible for creating the instance.
+//
     //AdminClient.create will create the AdminClient of the (docker) bootstrap-servers: localhost:19092, localhost:29092, localhost:39092
     // to then be able aftwerwards to create and list the Kafka TOPICS programmatically
     @Bean

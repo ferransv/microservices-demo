@@ -36,6 +36,10 @@ services:
     hostname: kafka-broker-1
     ports:
       - "19092:19092"
+
+#    depends_on is a Docker Compose keyword to set the order in which services must start and stop.
+#    Docker will pull the images and run the containers based on the given dependencies.
+#    So, in this case, the zookeeper container is the first in the queue to run before the kafka-broker-1.
     depends_on:
       - zookeeper
     environment:
