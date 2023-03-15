@@ -6,8 +6,6 @@
 #  This file tells the Spring Cloud Config service what port to listen in on, the
 #  application name, the application profiles, and the location where we will store the
 #  configuration data.
-#server:
-#  port: 8888
 spring:
   application:
     name: configserver
@@ -16,19 +14,14 @@ spring:
       server:
         git:
           #We set the file path of the config server repository in this Uri definition.
-#          uri: file:///C:/projects/repos/microservices-demo/config-server-repository
           uri: https://github.com/ferransv/config-server-repository
-#          timeout: 100
-#          request-connect-timeout: 100
           username: ferransv
-#          password: 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
-          password: '{cipher}4844fb7cd8e137709fef9d0f9a87b3716564b30d5850e36d37de13813b88f2907bd09d08676beb68318a0ced7b379751378daa6bb8014a43abae0f865900d495'
+          password: '{cipher}a0b6146ebf31c370a734e28ae3d70b4db71ae132d02501c153bb4cee12d377062e6204e1f0f4e2943b40d824f132b08c856ec42f1fc400618ae37cd7a5471d11'
           #Configuration servers clones the config-server-repository in git on the start up
           clone-on-start: true
           default-label: master #def. label in github
     #If config server cannot reach to config server repository and load the configuration it will stop inmediatelly
       fail-fast: true
-
     #!!We acces to the secured config server using this user / password(which was encrypted or cyphered
     #via command line with JCE using the encrypt key, and the real password, to then generate the cyphered password beneath)
   security:
@@ -36,6 +29,3 @@ spring:
       name: spring_cloud_user
       password: '{cipher}5c2d5a57abb55162ac20ee79f7c15855284c8bdb4963f173014addab3440729fd731e936e9f1198e94cf054d7902ac18'
 
-#  pass this KEY when the application starts through env var
-#  encrypt:
-#    key: 'Demo_Pwd!2020'

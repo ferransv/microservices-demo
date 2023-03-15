@@ -6,17 +6,28 @@ services:
       - "5005:5005"
     volumes:
       - "./docker-logs:/workspace/twitter-to-kafka-service/logs"
-#      - "./check-config-server-started.sh://wsl.localhost/docker-desktop/usr/local/bin/check-config-server-started.sh"
       - "./check-config-server-started.sh:/usr/local/bin/check-config-server-started.sh"
 #      #   Here we see that we can simply override any configuration variable, for example, for the bootstrap server
 #      #   We use the Kafka-broker-1 from Kafka cluster yml file instead of localhost because we will run *everything inside docker*
 #      #   And to be able to reach to Kafka from our service, we should use hostname.
 #      #  Because inside docker, all these containers will act as different hosts.
-#    user: root #To be able to run updates and also install the Curl command in the shell script we will run compose file with the user root.
+    user: root #To be able to run updates and also install the Curl command in the shell script we will run compose file with the user root.
 #    # we will override entry point for the Twitter to Kafka service and set this shell script that we created.
-#    entrypoint: ["check-config-server-started.sh"]
-#    depends_on:
-#      - config-server
+    entrypoint: ["check-config-server-started.sh"]
+    depends_on:
+      - config-server
+
+    #Springs's interpretation of the ENV. Variables names:
+    # in BEAN-NAME_PROPERTY-NAME -> the property name can likewise also refer to another (bean containing another bean);
+    #in the properties.xml parlance would be BEAN BEAN-NAME.PROPERTY-NAME
+    #and in the properties yml parlance, BEAN-NAME:
+    #                                     PROPERTY-NAME: value
+    #At the Class level definition of the bean, the BEAN_NAME translates to a class through the use of @ConfigurationProperties(prefix = "x"),
+    #so that in the end the values of its corresponding configuration properties
+    #(taken from possible several properties sources (like Config Servers, yaml properties files,...)  will be mapped to the bean attributes (instace variables)
+    #-> (ie: KAFKA-CONFIG translates to to KafkaConfigData
+    # @ConfigurationProperties(prefix = "kafka-config")
+    #public class KafkaConfigData
     environment:
       - "JAVA_OPTS=-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005 -Xms128m -Xmx256m"
       - "LOGGING_LEVEL_COM_MICROSERVICES_DEMO=info"
@@ -25,13 +36,11 @@ services:
       - "KAFKA-CONFIG_BOOTSTRAP-SERVERS=kafka-broker-1:9092, kafka-broker-2:9092, kafka-broker-3:9092"
       - "KAFKA-CONFIG_SCHEMA-REGISTRY-URL=http://schema-registry:8081"
       - "TWITTER-TO-KAFKA-SERVICE_ENABLE-MOCK-TWEETS=false"
-     # - "TWITTER-TO-KAFKA-SERVICE_ENABLE-V2-TWEETS=true"#??
       #      To be able to reach to Config server, Twitter to Kafka service cannot use localhost anymore.
       #It should use the host name of the config server container.
       - "SPRING_CLOUD_CONFIG_URI=http://config-server:8888" #To be able to reach to Config server,
                     #Twitter to Kafka service cannot use localhost anymore. It should use the host name of the config server container.
-#      - "SPRING_CLOUD_CONFIG_URI=http://localhost:8888"
-      - "ENCRYPT_KEY=${ENCRYPT_KEY}"
+      - "ENCRYPT_KEY=Demo_Pwd!2020"
     networks:
       - ${GLOBAL_NETWORK:-services}
   config-server:
@@ -48,8 +57,8 @@ services:
     environment:
       #      in the Java Opts environment variable, set the 5006 port to open a port for remote debugging for this service
       - "JAVA_OPTS=-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5006 -Xms128m -Xmx256m"
-      - "ENCRYPT_KEY=${ENCRYPT_KEY}"
-      - "SERVER_PORT=8888"#??
+      - "ENCRYPT_KEY=Demo_Pwd!2020"
+#      - "SERVER_PORT=8888"#??
       #passed encrypt_key environment variable in the environment section because it is required to decrypt the secrets at runtime.
       #both services, twitter to kafka service and config server has the same network definition, so they can see each other.
     networks:

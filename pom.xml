@@ -23,6 +23,8 @@
 	<version>0.0.1-SNAPSHOT</version>
 	<name>microservices-demo</name>
 	<description>Microservices demo project for Spring Boot</description>
+<!--	Since we don't have any source files in this base project (parent), the packaging shouldn't be jar, but should be POM.-->
+<!--	That will imply that we will use this pom as a base configuration, not for creating runnable jar.-->
 	<packaging>pom</packaging>
 
 	<properties>
@@ -192,6 +194,8 @@
 	<build>
 		<plugins>
 			<plugin>
+<!--				By default maven uses Java 1.6 version for source and target settings. And since we need -->
+<!--				to use Java 11, we will use maven compiler plugin to set this property.-->
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
 				<version>${maven-compiler-plugin.version}</version>
