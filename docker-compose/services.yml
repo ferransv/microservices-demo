@@ -36,6 +36,10 @@ services:
       - "KAFKA-CONFIG_BOOTSTRAP-SERVERS=kafka-broker-1:9092, kafka-broker-2:9092, kafka-broker-3:9092"
       - "KAFKA-CONFIG_SCHEMA-REGISTRY-URL=http://schema-registry:8081"
       - "TWITTER-TO-KAFKA-SERVICE_ENABLE-MOCK-TWEETS=false"
+      - "TWITTER-TO-KAFKA-SERVICE_ENABLE-V2-TWEETS=true"
+      - "TWITTER-TO-KAFKA-SERVICE_TWITTER-V2-BASE-URL=https://api.twitter.com/2/tweets/search/stream?tweet.fields=created_at&expansions=author_id"
+      - "TWITTER-TO-KAFKA-SERVICE_TWITTER-V2-RULES-BASE-URL=https://api.twitter.com/2/tweets/search/stream/rules"
+      - "TWITTER-TO-KAFKA-SERVICE_TWITTER-V2-BEARER-TOKEN=${TWITTER_BEARER_TOKEN}"
       #      To be able to reach to Config server, Twitter to Kafka service cannot use localhost anymore.
       #It should use the host name of the config server container.
       - "SPRING_CLOUD_CONFIG_URI=http://config-server:8888" #To be able to reach to Config server,
