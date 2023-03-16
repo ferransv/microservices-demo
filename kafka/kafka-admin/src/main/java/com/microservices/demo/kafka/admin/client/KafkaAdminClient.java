@@ -59,7 +59,7 @@ public class KafkaAdminClient {
     CreateTopicsResult createTopicsResult;
     try {
       //use retry template execute method to call a new method to create topics
-      //Getting the topic names to create and write an info log to mention the  number of topics that are being created.
+      //Getting the topic names to create and write an info log to mention the number of topics that are being created.
       createTopicsResult = retryTemplate.execute(this::doCreateTopics);
       LOG.info("Create topic result {}", createTopicsResult.values().values());
     } catch (Throwable t) {
