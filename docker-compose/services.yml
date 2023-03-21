@@ -50,7 +50,8 @@ services:
   config-server:
     image: ${GROUP_ID}/config.server:${SERVICE_VERSION:-latest}
     ports:
-      - "8888:8888"
+                    #Since we need to reach to config server using localhost, we need to open the 8888 port in the services.yml file
+      - "8888:8888" #the port definition for config server and add 8888 to be able to reach to config server using localhost 8888 From the new Kafka to Elastic Service.
       - "5006:5006"
     volumes:
       #In order to not lose the LOG data, preserving its old states after restarting the Container, we use VOLUMES
@@ -62,8 +63,9 @@ services:
       #      in the Java Opts environment variable, set the 5006 port to open a port for remote debugging for this service
       - "JAVA_OPTS=-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5006 -Xms128m -Xmx256m"
       - "ENCRYPT_KEY=Demo_Pwd!2020"
-#      - "SERVER_PORT=8888"#??
       #passed encrypt_key environment variable in the environment section because it is required to decrypt the secrets at runtime.
       #both services, twitter to kafka service and config server has the same network definition, so they can see each other.
     networks:
       - ${GLOBAL_NETWORK:-services}
+        
+        
