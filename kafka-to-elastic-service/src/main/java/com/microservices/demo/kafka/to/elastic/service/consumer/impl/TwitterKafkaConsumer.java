@@ -38,15 +38,15 @@ public class TwitterKafkaConsumer implements KafkaConsumer<Long, TwitterAvroMode
 
 
     //    We will now add initialization logic to Kafka to elastic
-    //The method will take a parameter Application event. -> we will annotate this methods with EventListener annotation.
+    //The method will take a parameter Application event. -> we will annotate this method with EventListener annotation.
     //Here we will do some checks to be able to ensure that Kafka topics are created.
     @EventListener
     public void onAppStarted(ApplicationStartedEvent event) {
         kafkaAdminClient.checkTopicsCreated();
         LOG.info("Topics with name {} is ready for operations!", kafkaConfigData.getTopicNamesToCreate().toArray());
         kafkaListenerEndpointRegistry.getListenerContainer("twitterTopicListener").start(); //we will get the listener container from the id
-        // that we specified in the Kafka listener annotation an START it explicitily
-        //As we want to start the kafka consumer EXPLICITILY after checking the Kafka topics, we will have to change the value of auto-startup to flase
+        // that we specified in the Kafka listener annotation, and START it explicitily
+        //As we want to start the kafka consumer EXPLICITILY after checking the Kafka topics, we will have to change the value of auto-startup to false
     }
 
 
