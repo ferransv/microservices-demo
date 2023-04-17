@@ -31,6 +31,8 @@ services:
       SCHEMA_REGISTRY_DEBUG: 'true'
     networks:
       - ${GLOBAL_NETWORK:-kafka}
+
+#  3 Kakfa Brokers which compose our Cluster
   kafka-broker-1:
     image: confluentinc/cp-kafka:${KAFKA_VERSION}
     hostname: kafka-broker-1

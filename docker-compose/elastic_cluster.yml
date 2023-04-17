@@ -1,0 +1,82 @@
+version: '3.7'
+services:
+#  three nodes for the elasticsearch as was in the kafka cluster.
+#  We have this number again to accomplish quorum and to prevent split brain issue, while maximizing number of nodes which could be down.
+#  It is advice to use odd numbers of master eligible nodes.
+#  As with 3 nodes for example, you can have at most one node down to construct a network with a quorum of two nodes.
+#  Elastic quorum Formula: (master_elegible_nodes / 2) + 1 -> in our example quorum = 3/2 + 1 = 2
+#  (for example with a cluster of 3 nodes -> maste e nodes = 2; so if one is down you cannot maintain a cluster
+# That's why we need at least three nodes to maintain a cluster in case one node is not running while also accomplishing quorum.
+
+#A node is a single server that is a part of a cluster. A node stores data and participates in the cluster’s indexing and search capabilities.
+#  Master Node — Controls the Elasticsearch cluster and is responsible for all cluster-wide operations like creating/deleting an index and adding/removing nodes.
+#  Data Node — Stores data and executes data-related operations such as search and aggregation.
+#  Client Node — Forwards cluster requests to the master node and data-related requests to data nodes.
+
+  elastic-1:
+#    we are using the official elasticsearch docker image
+    image: docker.elastic.co/elasticsearch/elasticsearch:${ELASTIC_VERSION:-latest}
+    hostname: elastic-1
+    environment:
+      - node.name=elastic-1
+      - cluster.name=es-twitter-cluster
+      - discovery.seed_hosts=elastic-2,elastic-3 #We set discovery seed host to the other nodes so that they can find each other. (conversly with the other elastic nodes)
+      - cluster.initial_master_nodes=elastic-1,elastic-2,elastic-3 #That means, any of the nodes can be chosen as the master.
+      - bootstrap.memory_lock=true #it is necessary to prevent swapping. Most operating systems try to use as much memory as possible for the file system caches;
+                                   #and eagerly swap out unused application memory. This can result in parts of the JVM heap or even its executable pages being swapped out to disc.
+                                   #Swapping is very bad for performance and for node stability. It can cause garbage collections to last for minutes instead of milliseconds
+                                   #and can cause nodes to respond slowly or even to disconnect from the cluster.
+                                   #In a resilient distributed system, it is more effective to let the operating system kill the node.
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    ulimits: #it is also set to give permission to ElasticSearch to be able to lock memory, using the memory lock property we set in the environment section.
+      memlock:
+        soft: -1
+        hard: -1
+    volumes: #We also set a volume to make the data persistent after restarting this compose file.
+      - data01:/usr/share/elasticsearch/data
+    ports:
+      - 9200:9200 #We set the port as 9200 for only elastic-1 node, which is enough to reach this cluster from outside the container
+    networks:
+      - ${GLOBAL_NETWORK:-elastic} #we set the network using the global definition coming from the environment file.
+  elastic-2:
+    image: docker.elastic.co/elasticsearch/elasticsearch:${ELASTIC_VERSION}
+    environment:
+      - node.name=elastic-2
+      - cluster.name=es-twitter-cluster
+      - discovery.seed_hosts=elastic-1,elastic-3
+      - cluster.initial_master_nodes=elastic-1,elastic-2,elastic-3
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - data02:/usr/share/elasticsearch/data
+    networks:
+      - ${GLOBAL_NETWORK:-elastic}
+  elastic-3:
+    image: docker.elastic.co/elasticsearch/elasticsearch:${ELASTIC_VERSION}
+    environment:
+      - node.name=elastic-3
+      - cluster.name=es-twitter-cluster
+      - discovery.seed_hosts=elastic-1,elastic-2
+      - cluster.initial_master_nodes=elastic-1,elastic-2,elastic-3
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - data03:/usr/share/elasticsearch/data
+    networks:
+      - ${GLOBAL_NETWORK:-elastic}
+
+volumes:
+  data01:
+    driver: local
+  data02:
+    driver: local
+  data03:
+    driver: local

@@ -7,16 +7,20 @@ services:
     volumes:
       - "./docker-logs:/workspace/twitter-to-kafka-service/logs"
       - "./check-config-server-started.sh:/usr/local/bin/check-config-server-started.sh"
-#      #   Here we see that we can simply override any configuration variable, for example, for the bootstrap server
-#      #   We use the Kafka-broker-1 from Kafka cluster yml file instead of localhost because we will run *everything inside docker*
-#      #   And to be able to reach to Kafka from our service, we should use hostname.
-#      #  Because inside docker, all these containers will act as different hosts.
+    #      #   Here we see that we can simply override any configuration variable, for example, for the bootstrap server
+    #      #   We use the Kafka-broker-1 from Kafka cluster yml file instead of localhost because we will run *everything inside docker*
+    #      #   And to be able to reach to Kafka from our service, we should use hostname.
+    #      #  Because inside docker, all these containers will act as different hosts.
     user: root #To be able to run updates and also install the Curl command in the shell script we will run compose file with the user root.
-#    # we will override entry point for the Twitter to Kafka service and set this shell script that we created.
-    entrypoint: ["check-config-server-started.sh"]
+    #    # we will override entry point for the Twitter to Kafka service and set this shell script that we created.
+    entrypoint: [ "check-config-server-started.sh" ]
+    #    this depends on only specifies the orders. It doesn't do any real check for the health of any service.
+    #    So we will still need to write some shell scripts for the real health checks. -> done by check-config-server-started.sh
     depends_on:
       - config-server
-
+      - kafka-broker-1
+      - kafka-broker-2
+      - kafka-broker-3
     #Springs's interpretation of the ENV. Variables names:
     # in BEAN-NAME_PROPERTY-NAME -> the property name can likewise also refer to another (bean containing another bean);
     #in the properties.xml parlance would be BEAN BEAN-NAME.PROPERTY-NAME
@@ -29,6 +33,7 @@ services:
     # @ConfigurationProperties(prefix = "kafka-config")
     #public class KafkaConfigData
     environment:
+      #      we use Java Opts to set remote debugger in the environment section of any service definition in the docker compose file
       - "JAVA_OPTS=-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005 -Xms128m -Xmx256m"
       - "LOGGING_LEVEL_COM_MICROSERVICES_DEMO=info"
       - "LOGGING_LEVEL_ROOT=info"
@@ -43,14 +48,50 @@ services:
       #      To be able to reach to Config server, Twitter to Kafka service cannot use localhost anymore.
       #It should use the host name of the config server container.
       - "SPRING_CLOUD_CONFIG_URI=http://config-server:8888" #To be able to reach to Config server,
-                    #Twitter to Kafka service cannot use localhost anymore. It should use the host name of the config server container.
+      #Twitter to Kafka service cannot use localhost anymore. It should use the host name of the config server container.
       - "ENCRYPT_KEY=Demo_Pwd!2020"
     networks:
+      - ${GLOBAL_NETWORK:-services}
+  kafka-to-elastic-service:
+    image: ${GROUP_ID}/kafka.to.elastic.service:${SERVICE_VERSION:-latest}
+    ports:
+      - "5006:5006"
+    volumes:
+      - "./docker-logs:/workspace/kafka-to-elastic-service/logs"
+#  for a start up shell script, where we will check if Kafka topics are ready
+#      we already have added a startup check for kafka to elastic service programmatically,
+#      in the method TwitterKafkaConsumer.onAppStarted -> kafkaAdminClient.checkTopicsCreated();
+#      However, we want to add also a shell script here to show an alternative way of checking initialization logic.
+      - "./check-kafka-topics-created.sh:/usr/local/bin/check-kafka-topics-created.sh"
+    user: root
+    entrypoint: [ "check-kafka-topics-created.sh" ]
+    depends_on:
+      - config-server
+      - twitter-to-kafka-service
+      - kafka-broker-1
+      - kafka-broker-2
+      - kafka-broker-3
+      - elastic-1
+      - elastic-2
+      - elastic-3
+    environment:
+      - "JAVA_OPTS=-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5006 -Xms128m -Xmx256m"
+      - "LOGGING_LEVEL_COM_MICROSERVICES_DEMO=info"
+      - "LOGGING_LEVEL_ROOT=info"
+      - "KAFKA-CONFIG_TOPIC-NAME=twitter-topic"
+      - "KAFKA-CONFIG_BOOTSTRAP-SERVERS=kafka-broker-1:9092, kafka-broker-2:9092, kafka-broker-3:9092"
+      - "KAFKA-CONFIG_SCHEMA-REGISTRY-URL=http://schema-registry:8081"
+      - "SPRING_CLOUD_CONFIG_URI=http://config-server:8888"
+      - "ELASTIC-CONFIG_INDEX-NAME=twitter-index"
+      - "ELASTIC-CONFIG_CONNECTION-URL=http://elastic-1:9200"
+      - "ENCRYPT_KEY=${ENCRYPT_KEY}"
+    networks:
+#      of course, we use the same docker bridge network to allow communication between services and also with Kafka and Elastic clusters.
       - ${GLOBAL_NETWORK:-services}
   config-server:
     image: ${GROUP_ID}/config.server:${SERVICE_VERSION:-latest}
     ports:
-                    #Since we need to reach to config server using localhost, we need to open the 8888 port in the services.yml file
+      #Since we need to reach to config server using localhost, we need to open the 8888 port in the services.yml file
       - "8888:8888" #the port definition for config server and add 8888 to be able to reach to config server using localhost 8888 From the new Kafka to Elastic Service.
       - "5006:5006"
     volumes:

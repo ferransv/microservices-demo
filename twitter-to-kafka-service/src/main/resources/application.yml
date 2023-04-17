@@ -5,7 +5,7 @@
 #!!!!When the twitter-to-kafka micros. is NOT running in a CONTAINER (running alone), we have to UNCOMMENT what is UNDER these lines,
 #because when the micros. is running alone it cannot communicate with the containerized config-server to get the config properties:
 #analogously for the other microservices!
-
+#
 #server:
 #  port: 8181
 #

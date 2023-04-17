@@ -1,5 +1,6 @@
-#analogously leave it empty because we will take the properties in the config client Kafka to Elastic yaml file in config server.#
-#In this file, we will set our configuration properties for the Kafka-to-elastic CONSUMER service, that will be in the config-server repository.
+#analogously leave it empty, only if it is running in a container(if it is not running will fail to get the configuration fron the config-server)!!
+#  because we should take normally the properties from the config-client-Kafka_to_elastic.yaml file in config server.#
+#In this file, we will set our configuration properties for the Kafka-to-elastic CONSUMER service, which override the config server ones.
 server:
   port: 8182
 
@@ -37,3 +38,11 @@ retry-config:
   multiplier: 2.0
   maxAttempts: 3
   sleep-time-ms: 2000
+
+elastic-config:
+  index-name: twitter-index
+  connection-url: http://localhost:9200
+  connect-timeout-ms: 5000
+  socket-timeout-ms: 30000
+  is-repository: true
+#  is-repository: false

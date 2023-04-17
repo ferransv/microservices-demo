@@ -17,9 +17,13 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
-@EnableKafka //which will enable detection of Kafka Listener Annotation. You may skip to use this Enabled Kafka annotation
-// because Spring boot will automatically enable KafkaListener annotation.
+//For consuming messages, we need to configure a ConsumerFactory and a KafkaListenerContainerFactory.
+//    Once these beans are available in the Spring bean factory, POJO-based consumers can be configured using @KafkaListener annotation (TwitterKafkaConsumer class).
+
+@EnableKafka //It will enable detection of @KafkaListener Annotation (which is used in the receive() method of TwitterKafkaConsumer.
+// You may skip to use this EnabledKafka annotation because Spring boot will automatically enable @KafkaListener annotation.
 @Configuration //two generic variables: K extend Serializable, and V extends specific record base, for key and message for the Kafka data.
+//This is the Class where is configured the CREATION of a a KafkaConsumer
 public class KafkaConsumerConfig<K extends Serializable, V extends SpecificRecordBase> {
 
     private final KafkaConfigData kafkaConfigData;
@@ -34,6 +38,7 @@ public class KafkaConsumerConfig<K extends Serializable, V extends SpecificRecor
     @Bean
     public Map<String, Object> consumerConfigs() {
         Map<String, Object> props = new HashMap<>();
+        //The first three properties are mandatory
         props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaConfigData.getBootstrapServers());
         props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, kafkaConsumerConfigData.getKeyDeserializer());
         props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, kafkaConsumerConfigData.getValueDeserializer());
@@ -59,7 +64,7 @@ public class KafkaConsumerConfig<K extends Serializable, V extends SpecificRecor
     @Bean
     public KafkaListenerContainerFactory<ConcurrentMessageListenerContainer<K, V>> kafkaListenerContainerFactory() {
         ConcurrentKafkaListenerContainerFactory<K, V> factory = new ConcurrentKafkaListenerContainerFactory<>();
-        factory.setConsumerFactory(consumerFactory());
+        factory.setConsumerFactory(consumerFactory()); //A part of the Consumer configuration definition.
         //With batch listener we are saying that we want to get data from Kafka not one by one, but as batches.
         factory.setBatchListener(kafkaConsumerConfigData.getBatchListener());
         //With concurrency level, spring boot will create that much threads when consuming data. It should be equal to the partition number.
