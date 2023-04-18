@@ -40,6 +40,7 @@ services:
       - ${GLOBAL_NETWORK:-elastic} #we set the network using the global definition coming from the environment file.
   elastic-2:
     image: docker.elastic.co/elasticsearch/elasticsearch:${ELASTIC_VERSION}
+    hostname: elastic-2
     environment:
       - node.name=elastic-2
       - cluster.name=es-twitter-cluster
@@ -57,6 +58,7 @@ services:
       - ${GLOBAL_NETWORK:-elastic}
   elastic-3:
     image: docker.elastic.co/elasticsearch/elasticsearch:${ELASTIC_VERSION}
+    hostname: elastic-3
     environment:
       - node.name=elastic-3
       - cluster.name=es-twitter-cluster

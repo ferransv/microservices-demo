@@ -2,6 +2,15 @@ version: '3.7'
 services:
   twitter-to-kafka-service:
     image: ${GROUP_ID}/twitter.to.kafka.service:${SERVICE_VERSION:-latest}
+#    deploy:
+#      resources:
+#        limits:
+#          cpus: '0.35'
+#          memory: 450M
+#          pids: 1
+#        reservations:
+#          cpus: '0.20'
+#          memory: 400M
     ports:
       - "5005:5005"
     volumes:
@@ -54,16 +63,26 @@ services:
       - ${GLOBAL_NETWORK:-services}
   kafka-to-elastic-service:
     image: ${GROUP_ID}/kafka.to.elastic.service:${SERVICE_VERSION:-latest}
+#    deploy:
+#      resources:
+#        limits:
+#          cpus: '0.35'
+#          memory: 450M
+#          pids: 1
+#        reservations:
+#          cpus: '0.20'
+#          memory: 400M
     ports:
       - "5006:5006"
     volumes:
       - "./docker-logs:/workspace/kafka-to-elastic-service/logs"
-#  for a start up shell script, where we will check if Kafka topics are ready
-#      we already have added a startup check for kafka to elastic service programmatically,
-#      in the method TwitterKafkaConsumer.onAppStarted -> kafkaAdminClient.checkTopicsCreated();
-#      However, we want to add also a shell script here to show an alternative way of checking initialization logic.
+      #  for a start up shell script, where we will check if Kafka topics are ready
+      #      we already have added a startup check for kafka to elastic service programmatically,
+      #      in the method TwitterKafkaConsumer.onAppStarted -> kafkaAdminClient.checkTopicsCreated();
+      #      However, we want to add also a shell script here to show an alternative way of checking initialization logic.
       - "./check-kafka-topics-created.sh:/usr/local/bin/check-kafka-topics-created.sh"
-    user: root
+    user: root #we run this image as a route as was in the Twitter to Kafka service.
+               #This is to be able to run the shell script and install and run required programs in the shell, like Curl command or Kafkacat command.
     entrypoint: [ "check-kafka-topics-created.sh" ]
     depends_on:
       - config-server
@@ -86,14 +105,23 @@ services:
       - "ELASTIC-CONFIG_CONNECTION-URL=http://elastic-1:9200"
       - "ENCRYPT_KEY=${ENCRYPT_KEY}"
     networks:
-#      of course, we use the same docker bridge network to allow communication between services and also with Kafka and Elastic clusters.
+      #      of course, we use the same docker bridge network to allow communication between services and also with Kafka and Elastic clusters.
       - ${GLOBAL_NETWORK:-services}
   config-server:
     image: ${GROUP_ID}/config.server:${SERVICE_VERSION:-latest}
+#    deploy:
+#      resources:
+#        limits:
+#          cpus: '0.25'
+#          memory: 250M
+#          pids: 1
+#        reservations:
+#          cpus: '0.15'
+#          memory: 200M
     ports:
       #Since we need to reach to config server using localhost, we need to open the 8888 port in the services.yml file
       - "8888:8888" #the port definition for config server and add 8888 to be able to reach to config server using localhost 8888 From the new Kafka to Elastic Service.
-      - "5006:5006"
+      - "5007:5007"
     volumes:
       #In order to not lose the LOG data, preserving its old states after restarting the Container, we use VOLUMES
       #for that there is a mapping between the docker logs folder and the logs folders inside the service,
@@ -101,12 +129,12 @@ services:
       #The container has its log folder structure
       #And the logs folders local to the module are created using the build image goal of Spring boot
     environment:
-      #      in the Java Opts environment variable, set the 5006 port to open a port for remote debugging for this service
-      - "JAVA_OPTS=-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5006 -Xms128m -Xmx256m"
+      #      in the Java Opts environment variable, set the 5007 port to open a port for remote debugging for this service
+      - "JAVA_OPTS=-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5007 -Xms128m -Xmx256m"
       - "ENCRYPT_KEY=Demo_Pwd!2020"
       #passed encrypt_key environment variable in the environment section because it is required to decrypt the secrets at runtime.
       #both services, twitter to kafka service and config server has the same network definition, so they can see each other.
     networks:
       - ${GLOBAL_NETWORK:-services}
-        
-        
+
+
